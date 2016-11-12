@@ -342,8 +342,8 @@ roles:
       - implicit
     requires:
       - k8s-prereqs
-      - cert-ca-install-root
-      - cert-ca-signed-cert
+      - k8s-cert-ca-install-root
+      - k8s-cert-ca-signed-cert
       - etcd
     wants-attribs:
       - k8s-account
@@ -356,10 +356,10 @@ roles:
       - k8s-token_dir
       - k8s-users
       - k8s-master-network
-      - cert-key-file
-      - cert-cert-file
-      - cert-root-file
-      - cert-ca-time
+      - k8s-cert-key-file
+      - k8s-cert-cert-file
+      - k8s-cert-root-file
+      - k8s-cert-ca-time
       - etcd-addresses
       - etcd-client-port
       - k8s-scope
@@ -418,8 +418,8 @@ roles:
     requires:
       - k8s-prereqs
       - k8s-apiserver
-      - cert-ca-install-root
-      - cert-ca-signed-cert
+      - k8s-cert-ca-install-root
+      - k8s-cert-ca-signed-cert
     wants-attribs:
       - k8s-version
       - k8s-strict
@@ -429,10 +429,10 @@ roles:
       - k8s-cluster_service_ips
       - k8s-log-level
       - k8s-master-network
-      - cert-key-file
-      - cert-cert-file
-      - cert-root-file
-      - cert-ca-time
+      - k8s-cert-key-file
+      - k8s-cert-cert-file
+      - k8s-cert-root-file
+      - k8s-cert-ca-time
       - k8s-scope
     metadata:
       role_role_map:
@@ -512,16 +512,16 @@ roles:
     jig: ansible-playbook
     requires:
       - rebar-installed-node
-      - cert-ca-install-root
-      - cert-ca-signed-cert
+      - k8s-cert-ca-install-root
+      - k8s-cert-ca-signed-cert
     flags:
       - milestone
       - cluster
     wants-attribs:
-      - cert-key-file
-      - cert-cert-file
-      - cert-root-file
-      - cert-ca-time
+      - k8s-cert-key-file
+      - k8s-cert-cert-file
+      - k8s-cert-root-file
+      - k8s-cert-ca-time
     type: "BarclampCluster::ServiceRole"
     icon: "store"
     events:
@@ -638,40 +638,40 @@ roles:
         - path: ip
           name: eval:ipaddress(v4_only, etcd-network, private).address
 
-  - name: cert-ca
+  - name: k8s-cert-ca
     jig: role-provided
     type: "BarclampCluster::MakeCa"
     icon: account_balance
     flags:
       - service
     attribs:
-      - name: cert-ca-label
+      - name: k8s-cert-ca-label
         description: "Label of the root CA"
         default: "k8s-ca"
         map: 'cert/label'
         schema:
           type: str
-      - name: cert-ca-time
+      - name: k8s-cert-ca-time
         description: "Generation Time of the root CA"
         default: "1970-01-01 00:00:00 -0000"
         map: 'cert/time'
         schema:
           type: str
-  - name: cert-ca-install-root
+  - name: k8s-cert-ca-install-root
     jig: role-provided
     type: "BarclampCluster::InstallRootCa"
     requires:
-      - cert-ca
+      - k8s-cert-ca
       - rebar-installed-node
     flags:
       - implicit
       - milestone
     wants-attribs:
-      - cert-ca-label
-      - cert-ca-time
+      - k8s-cert-ca-label
+      - k8s-cert-ca-time
     icon: stars
     attribs:
-      - name: cert-root-file
+      - name: k8s-cert-root-file
         description: "Information about the root file"
         map: "cert/root"
         default:
@@ -684,21 +684,21 @@ roles:
           mapping:
             =:
               type: str
-  - name: cert-ca-signed-cert
+  - name: k8s-cert-ca-signed-cert
     jig: role-provided
     type: "BarclampCluster::InstallSignedCert"
     requires:
-      - cert-ca
+      - k8s-cert-ca
       - rebar-installed-node
     flags:
       - implicit
       - milestone
     wants-attribs:
-      - cert-ca-label
-      - cert-ca-time
+      - k8s-cert-ca-label
+      - k8s-cert-ca-time
     icon: enhanced_encryption
     attribs:
-      - name: cert-cert-file
+      - name: k8s-cert-cert-file
         description: "Information about the cert file"
         map: "cert/cert"
         default:
@@ -711,7 +711,7 @@ roles:
           mapping:
             =:
               type: str
-      - name: cert-key-file
+      - name: k8s-cert-key-file
         description: "Information about the key file"
         map: "cert/key"
         default:
@@ -776,8 +776,8 @@ roles:
       - k8s-prereqs
       - k8s-master
       - k8s-docker
-      - cert-ca-install-root
-      - cert-ca-signed-cert
+      - k8s-cert-ca-install-root
+      - k8s-cert-ca-signed-cert
     wants-attribs:
       - k8s-version
       - k8s-strict
@@ -789,10 +789,10 @@ roles:
       - k8s-master-network
       - k8s-apiserver-port
       - k8s-master-addresses
-      - cert-key-file
-      - cert-cert-file
-      - cert-root-file
-      - cert-ca-time
+      - k8s-cert-key-file
+      - k8s-cert-cert-file
+      - k8s-cert-root-file
+      - k8s-cert-ca-time
       - k8s-scope
     metadata:
       role_role_map:
@@ -1467,15 +1467,15 @@ roles:
     jig: ansible-playbook
     icon: "low_priority"
     requires:
-      - cert-ca-install-root
-      - cert-ca-signed-cert
+      - k8s-cert-ca-install-root
+      - k8s-cert-ca-signed-cert
       - k8s-flannel-config
       - etcd
     wants-attribs:
-      - cert-key-file
-      - cert-cert-file
-      - cert-root-file
-      - cert-ca-time
+      - k8s-cert-key-file
+      - k8s-cert-cert-file
+      - k8s-cert-root-file
+      - k8s-cert-ca-time
       - etcd-addresses
       - etcd-client-port
       - flannel-backend-type
@@ -1514,15 +1514,15 @@ roles:
       - k8s-docker
     requires:
       - k8s-network-pre-install
-      - cert-ca-install-root
-      - cert-ca-signed-cert
+      - k8s-cert-ca-install-root
+      - k8s-cert-ca-signed-cert
       - k8s-flannel-config
       - k8s-flannel-etcd-config
     wants-attribs:
-      - cert-key-file
-      - cert-cert-file
-      - cert-root-file
-      - cert-ca-time
+      - k8s-cert-key-file
+      - k8s-cert-cert-file
+      - k8s-cert-root-file
+      - k8s-cert-ca-time
       - etcd-addresses
       - etcd-client-port
       - k8s-master-network
