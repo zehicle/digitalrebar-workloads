@@ -1,0 +1,13 @@
+---
+# APL v2 Licensed.  Copyright RackN 2016
+# Provides quick way to validate that all required variables are present
+
+- name: "Debug On? YES!"
+  debug: msg='!!!!! WARNING - DEBUG ON - DISABLE FOR PRODUCTION !!!!!'
+
+- name: "VAR: Checksum"
+  debug: var=source.checksum["{{ k8s.cert.ca.time }}"]
+
+
+#- name: "DEBUG: Variable"
+#  debug: var=rebar

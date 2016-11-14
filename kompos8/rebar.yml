@@ -374,19 +374,19 @@ roles:
       playbook_file: "."
       attribute_map:
         - path: k8s/apiserver/tls_cert_file
-          name: cert/cert/destination
+          name: k8s/cert/cert/destination
         - path: k8s/apiserver/tls_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: k8s/apiserver/service_account_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: k8s/apiserver/kubelet_cert_auth
-          name: cert/root/destination
+          name: k8s/cert/root/destination
         - path: k8s/apiserver/etcd_ca_file
-          name: cert/root/destination
+          name: k8s/cert/root/destination
         - path: k8s/apiserver/etcd_cert_file
-          name: cert/cert/destination
+          name: k8s/cert/cert/destination
         - path: k8s/apiserver/etcd_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: k8s/apiserver/count
           name: eval:count_nodes_with_role(k8s-apiserver)
         - path: etcd/port
@@ -407,6 +407,47 @@ roles:
           name: eval:ipaddress(v4_only, k8s-master-network, public).address
         - path: private_ip
           name: eval:ipaddress(v4_only, k8s-master-network, private).address
+
+  - name: k8s-rotate-root
+    description: 'Kubernetes Rotate PKI Root'
+    jig: ansible-playbook
+    icon: "rotate_90_degrees_ccw"
+    flags:
+      - implicit
+    requires:
+      - k8s-prereqs
+      - k8s-cert-ca-install-root
+      - k8s-cert-ca-signed-cert
+      - k8s-worker
+    wants-attribs:
+      - k8s-cert-key-file
+      - k8s-cert-cert-file
+      - k8s-cert-root-file
+      - k8s-cert-ca-time
+    metadata:
+      role_role_map:
+        k8s-apiserver:
+          - rotate-root
+      role_group_map:
+        k8s-apiserver:
+          - rotate-root
+      playbook_combined_repo: true
+      playbook_file: "."
+      attribute_map:
+        - path: k8s/apiserver/tls_cert_file
+          name: k8s/cert/cert/destination
+        - path: k8s/apiserver/tls_key_file
+          name: k8s/cert/key/destination
+        - path: k8s/apiserver/service_account_key_file
+          name: k8s/cert/key/destination
+        - path: k8s/apiserver/kubelet_cert_auth
+          name: k8s/cert/root/destination
+        - path: k8s/apiserver/etcd_ca_file
+          name: k8s/cert/root/destination
+        - path: k8s/apiserver/etcd_cert_file
+          name: k8s/cert/cert/destination
+        - path: k8s/apiserver/etcd_key_file
+          name: k8s/cert/key/destination
 
   # Assumes that it is running on the same node as the k8s-apiserver
   - name: k8s-controller
@@ -445,9 +486,9 @@ roles:
       playbook_file: "."
       attribute_map:
         - path: k8s/controller/service_account_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: k8s/controller/root_ca_file
-          name: cert/root/destination
+          name: k8s/cert/root/destination
       inventory_map:
         # IP Map is a challenge.
         # We are trying to handle the addressing of the nodes.
@@ -622,17 +663,17 @@ roles:
           - etcd
       attribute_map:
         - path: etcd_client_cert_file
-          name: cert/cert/destination
+          name: k8s/cert/cert/destination
         - path: etcd_client_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: etcd_client_trusted_ca_file
-          name: cert/root/destination
+          name: k8s/cert/root/destination
         - path: etcd_peer_cert_file
-          name: cert/cert/destination
+          name: k8s/cert/cert/destination
         - path: etcd_peer_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: etcd_peer_trusted_ca_file
-          name: cert/root/destination
+          name: k8s/cert/root/destination
       inventory_map:
         # For now, limit the etcd cluster to only in the cloud cluster.
         - path: ip
@@ -805,11 +846,11 @@ roles:
       playbook_file: "."
       attribute_map:
         - path: k8s/kubelet/key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: k8s/kubelet/cert_file
-          name: cert/cert/destination
+          name: k8s/cert/cert/destination
         - path: k8s/kubelet/ca_file
-          name: cert/root/destination
+          name: k8s/cert/root/destination
       inventory_map:
         # IP Map is a challenge.
         # We are trying to handle the addressing of the nodes.
@@ -1494,11 +1535,11 @@ roles:
       playbook_file: "."
       attribute_map:
         - path: flannel/etcd_ca_file
-          name: cert/root/destination
+          name: k8s/cert/root/destination
         - path: flannel/etcd_cert_file
-          name: cert/cert/destination
+          name: k8s/cert/cert/destination
         - path: flannel/etcd_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: etcd/port
           name: etcd_client_port
 
@@ -1539,11 +1580,11 @@ roles:
       playbook_file: "."
       attribute_map:
         - path: flannel/etcd_ca_file
-          name: cert/root/destination
+          name: k8s/cert/root/destination
         - path: flannel/etcd_cert_file
-          name: cert/cert/destination
+          name: k8s/cert/cert/destination
         - path: flannel/etcd_key_file
-          name: cert/key/destination
+          name: k8s/cert/key/destination
         - path: etcd/port
           name: etcd_client_port
       inventory_map:
